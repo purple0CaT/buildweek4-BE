@@ -5,6 +5,8 @@ import { Server } from "socket.io";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import passport from "passport";
+import chatRoute from "./chat/chat.js";
+import userRoute from "./user/user.js";
 //
 export const app = express();
 export const httpServer = createServer(app);
@@ -19,13 +21,9 @@ app.use(cookieParser());
 app.use(passport.initialize());
 
 //************Router ****************
-// server.use("/auth", authorizRoute);
-
-// app.use("/user", userRoute);
-// app.use("/login", loginRoute);
-// app.use("/register", registerRoute);
-
-// app.use("/accommodation", accommodationRouter);
+//
+app.use("/user", userRoute);
+app.use("/chat", chatRoute);
 //
 app.use(generalErrHandl);
 app.use(catchAllHandler);

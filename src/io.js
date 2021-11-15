@@ -14,16 +14,3 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
   console.table(listEndpoints(app));
   console.log("Server 🚀 > ", port);
 });
-//
-// mongoose.connect(process.env.MONGO_URL);
-// mongoose.connection.on("connected", () => {
-//   console.log("Successfully connected to mongoDB 🚀");
-//   app.listen(port, () => {
-//   });
-// });
-// mongoose.connection.on("error", (err) => {
-//   console.log("Mongo ERROR", err);
-// });
-// app.on("error", (err) => {
-//   console.error("Server crashed due to ", err);
-// });
