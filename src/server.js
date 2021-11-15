@@ -22,8 +22,8 @@ app.use(passport.initialize());
 
 //************Router ****************
 //
-app.use("/user", userRoute);
-app.use("/chat", chatRoute);
+app.use("/users", userRoute);
+app.use("/chats", chatRoute);
 //
 app.use(generalErrHandl);
 app.use(catchAllHandler);
