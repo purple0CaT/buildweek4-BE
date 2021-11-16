@@ -7,13 +7,14 @@ import cookieParser from "cookie-parser";
 import passport from "passport";
 import chatRoute from "./chat/chat.js";
 import userRoute from "./user/user.js";
+import googleStrategy from "./auth/oauth.js";
 //
 export const app = express();
 export const httpServer = createServer(app);
 export const io = new Server(httpServer);
 
 // passport.use("facebook", FBStrategy);
-// passport.use("google", googleStrategy);
+passport.use("google", googleStrategy);
 
 app.use(cors());
 app.use(express.json());

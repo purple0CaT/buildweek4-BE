@@ -32,3 +32,5 @@ const googleStrategy=new GoogleStrategy({
 passport.serializeUser(function(userData,passportNext)
     {passportNext(null,userData)}
 )
+
+export default googleStrategy
