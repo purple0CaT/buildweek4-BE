@@ -145,15 +145,15 @@ userRoute.post("/session", async (req, res, next) => {
 //   }
 // });
 
-// userRoute.delete("/session", JWTAuthMiddleware, async (req, res, next) => {
-//   try {
-//     req.user.refreshToken = null;
-//     await req.user.save();
-//     res.send();
-//   } catch (error) {
-//     next(error);
-//   }
-// });
+userRoute.delete("/session", JWTAuthMiddleware, async (req, res, next) => {
+  try {
+    req.user.refreshToken = null;
+    await req.user.save();
+    res.send("Ok");
+  } catch (error) {
+    next(error);
+  }
+});
 
 // ?
 userRoute.post("/session/refresh", async (req, res, next) => {
