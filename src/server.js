@@ -8,6 +8,7 @@ import passport from "passport";
 import chatRoute from "./chat/chat.js";
 import userRoute from "./user/user.js";
 import googleStrategy from "./auth/oauth.js";
+import authRouter from './auth/TEMPindexMarco.js'
 //
 export const app = express();
 export const httpServer = createServer(app);
@@ -23,6 +24,7 @@ app.use(passport.initialize());
 
 //************Router ****************
 //
+app.use("/auth", authRouter);   // MARCO's TEMP, JUST FOR TESTING
 app.use("/users", userRoute);
 app.use("/chats", chatRoute);
 //

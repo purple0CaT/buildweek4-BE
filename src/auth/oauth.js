@@ -1,7 +1,7 @@
 import passport from 'passport'
 import GoogleStrategy from 'passport-google-oauth20'
 import UserModel from '../user/schema.js'
-// import {generateJwt} from SOMEWHERE <--------------------- GENERATE JWN NEEDED !!!!!!
+import { createJWT } from './auth.js'
 
 const googleStrategy=new GoogleStrategy({
         clientID:process.env.GOOGLE_OAUTH_ID,
@@ -13,7 +13,7 @@ const googleStrategy=new GoogleStrategy({
         const user=await UserModel.findOne({googleId:profile.id})
             console.log('USER from OAUTH: ',user)   //********************************CONSOLE LOG HERE */
         if(user){
-            const token=await generateJwt({id:user._id.toString()})
+            const token=await createJWT({id:user._id.toString()})
                 console.log('USER ID from OAUTH (EXISTING USER): ',user._id)    //************************CONSOLE LOG HERE */
             passportNext(null,{token})
         }else{
@@ -24,7 +24,7 @@ const googleStrategy=new GoogleStrategy({
             })
             await user.save()
                 console.log('USER ID from OAUTH (CREATED USER): ',user._id) //********************************CONSOLE LOG HERE */
-            const token=await generateJwt({id:user._id.toString()})
+            const token=await createJWT({id:user._id.toString()})
             passportNext(null,{token})
         }
     }

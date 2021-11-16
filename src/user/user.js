@@ -1,6 +1,8 @@
 import express from "express";
 import createHttpError from "http-errors";
-import { JWTAuthMiddleware } from "../auth/token";
+import { JWTAuthMiddleware } from "../auth/token.js";
+import UserModel from './schema.js'
+import passport from 'passport'
 
 const userRoute = express.Router();
 
@@ -72,4 +74,9 @@ userRoute.post("/session/refresh", async (req, res, next) => {
     next(error);
   }
 });
+userRoute.get("/googleLogin",passport.authenticate("google",{scope:["profile","email"]}))
+userRoute.get("/googleRedirect",passport.authenticate("google"),(req,res,next)=>{
+      console.log(req.user) //*************************************************************************CONSOLE LOG HERE */
+    res.redirect(`http://localhost:3000?accessToken=${req.user.token}}`)
+})
 export default userRoute;
