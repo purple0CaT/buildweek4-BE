@@ -6,7 +6,8 @@ import { v2 as cloudinary } from "cloudinary";
 import { UserModel } from "./model.js";
 import multer from "multer";
 import { JWTAuthenticate } from "../auth/tool.js";
-import passport from 'passport'
+import passport from "passport";
+import { createJWT } from "../auth/auth.js";
 
 const userRoute = express.Router();
 
@@ -64,11 +65,12 @@ userRoute.post(
   multer({ storage: cloudinaryStorage }).single("avatar"),
   async (req, res, next) => {
     try {
-      const user = await UserSchema.findById(req.user._id);
-      const newAvatar = { cover: req.file.path };
-      const userWithAvatar = { ...user, ...newAvatar };
-
-      res.send(userWithAvatar);
+      const user = await UserModel.findById(req.user._id);
+      user.avatar = req.file.path;
+      await user.save();
+      // const newAvatar = { cover: req.file.path };
+      // const userWithAvatar = { ...user, ...newAvatar };
+      res.send(user);
     } catch (error) {
       next(error);
     }
@@ -92,7 +94,7 @@ userRoute.post("/account", async (req, res, next) => {
   try {
     const newUser = new UserModel(req.body);
     const { _id } = await newUser.save();
-    const accessToken = await JWTAuthenticate(newUser);
+    const accessToken = await createJWT(newUser);
     res.send({ ...newUser.toObject(), accessToken });
   } catch (error) {
     next(error);
@@ -106,7 +108,7 @@ userRoute.post("/session", async (req, res, next) => {
     const user = await UserModel.CheckCredentials(email, password);
 
     if (user) {
-      const { accessToken, refreshToken } = await JWTAuthenticate(user);
+      const { accessToken, refreshToken } = await createJWT(user);
 
       res.cookie("accessToken", accessToken, {
         httpOnly: true,
@@ -118,7 +120,7 @@ userRoute.post("/session", async (req, res, next) => {
         // secure: (process.env.NODE_ENV = "production" ? true : false),
         sameSite: "none",
       });
-      res.send();
+      res.send(accessToken);
     }
   } catch (error) {
     next(error);
@@ -160,9 +162,18 @@ userRoute.post("/session/refresh", async (req, res, next) => {
     next(error);
   }
 });
-userRoute.get("/googleLogin",passport.authenticate("google",{scope:["profile","email"]}))
-userRoute.get("/googleRedirect",passport.authenticate("google"),(req,res,next)=>{
-      console.log(req.user) //*************************************************************************CONSOLE LOG HERE */
-    res.redirect(`http://localhost:3000?accessToken=${req.user.token}}`)
-})
+userRoute.get(
+  "/googleLogin",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+userRoute.get(
+  "/googleRedirect",
+  passport.authenticate("google"),
+  (req, res, next) => {
+    // console.log(req.user); //*************************************************************************CONSOLE LOG HERE */
+    res.redirect(
+      `http://localhost:3000?accessToken=${req.user.token.accessToken}}`
+    );
+  }
+);
 export default userRoute;

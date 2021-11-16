@@ -1,5 +1,5 @@
 import createHttpError from "http-errors";
-import UserSchema from "../user/schema.js";
+import { UserModel } from "../user/model.js";
 import jwt from "jsonwebtoken";
 
 export const createJWT = async (user) => {
@@ -52,7 +52,7 @@ export const verifyRefreshJWT = (token) =>
 // Create NEW tokens based on REFRESH TOKEN
 export const createRefreshToken = async (cookieToken) => {
   const decodedToken = await verifyRefreshJWT(cookieToken);
-  const user = await UserSchema.findById(decodedToken._id);
+  const user = await UserModel.findById(decodedToken._id);
   if (!user) throw createHttpError(404, "User not found!");
   if (user.refreshToken === cookieToken) {
     const { accessToken, refreshToken } = await createJWT(user);

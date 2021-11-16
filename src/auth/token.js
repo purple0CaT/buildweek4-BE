@@ -1,5 +1,5 @@
 import createHttpError from "http-errors";
-import UserSchema from "../user/schema.js";
+import { UserModel } from "../user/model.js";
 import { verifyJWT } from "./auth.js";
 
 export const JWTAuthMiddleware = async (req, res, next) => {
@@ -13,9 +13,9 @@ export const JWTAuthMiddleware = async (req, res, next) => {
 
       const decodedToken = await verifyJWT(token);
 
-      console.log("DECODED TOKEN ", decodedToken);
+      // console.log("DECODED TOKEN ", decodedToken);
 
-      const user = await UserSchema.findById(decodedToken._id);
+      const user = await UserModel.findById(decodedToken._id);
 
       if (user) {
         req.user = user;
