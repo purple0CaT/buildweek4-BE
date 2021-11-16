@@ -6,6 +6,7 @@ import { v2 as cloudinary } from "cloudinary";
 import { UserModel } from "./model.js";
 import multer from "multer";
 import { JWTAuthenticate } from "../auth/tool.js";
+import passport from 'passport'
 
 const userRoute = express.Router();
 
@@ -159,4 +160,9 @@ userRoute.post("/session/refresh", async (req, res, next) => {
     next(error);
   }
 });
+userRoute.get("/googleLogin",passport.authenticate("google",{scope:["profile","email"]}))
+userRoute.get("/googleRedirect",passport.authenticate("google"),(req,res,next)=>{
+      console.log(req.user) //*************************************************************************CONSOLE LOG HERE */
+    res.redirect(`http://localhost:3000?accessToken=${req.user.token}}`)
+})
 export default userRoute;
