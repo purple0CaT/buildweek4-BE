@@ -1,6 +1,6 @@
 import express from "express";
 import createHttpError from "http-errors";
-import { JWTAuthMiddleware } from "../auth/token";
+import { JWTAuthMiddleware } from "../auth/token.js";
 
 const userRoute = express.Router();
 
