@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { UserSchema } from "../user/schema.js";
 
-const MessageSchema = new mongoose.Schema(
+export const MessageSchema = new mongoose.Schema(
   {
     sender: [{ type: UserSchema }],
     content: {
@@ -17,4 +17,5 @@ export const ChatSchema = new mongoose.Schema({
   name: { type: String },
   history: [{ type: MessageSchema }],
   image: { type: String },
+  userOnline: [{ type: UserSchema }],
 });
