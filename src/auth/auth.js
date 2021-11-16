@@ -8,7 +8,7 @@ export const createJWT = async (user) => {
   return { accessToken, refreshToken };
 };
 //  CREATE TOKEN
-const generateJWT = (payload) => {
+const generateJWT = (payload) =>
   new Promise((res, rej) =>
     jwt.sign(
       payload,
@@ -20,9 +20,8 @@ const generateJWT = (payload) => {
       }
     )
   );
-};
 //  CREATE REFRESH TOKEN
-const generateRefreshJWT = (payload) => {
+const generateRefreshJWT = (payload) =>
   new Promise((res, rej) =>
     jwt.sign(
       payload,
@@ -34,7 +33,6 @@ const generateRefreshJWT = (payload) => {
       }
     )
   );
-};
 // Verify Token
 export const verifyJWT = (token) =>
   new Promise((res, rej) =>
