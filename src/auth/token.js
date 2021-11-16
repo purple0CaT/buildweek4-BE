@@ -1,6 +1,6 @@
 import createHttpError from "http-errors";
-import UserSchema from "../user/user.js";
-import { verifyJWT } from "./tool.js";
+import UserSchema from "../user/schema.js";
+import { verifyJWT } from "./auth.js";
 
 export const JWTAuthMiddleware = async (req, res, next) => {
   if (!req.cookies.accessToken) {
