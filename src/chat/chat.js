@@ -23,9 +23,9 @@ const cloudinaryStorage = new CloudinaryStorage({
 const chatRoute = express.Router();
 chatRoute.get("/", JWTAuthMiddleware, async (req, res, next) => {
   try {
-    const chats = await ChatModel.findAll();
+    const chats = await ChatModel.find();
     if (chats) {
-      return chats;
+      res.send(chats);
     } else {
       next(createHttpError(404, "Users not found!"));
     }

@@ -1,6 +1,5 @@
 import { Server } from "socket.io";
-import { ChatModel } from "./chat/model.js";
-import { MessageSchema } from "./chat/schema.js";
+import { ChatModel, MessageModel } from "./chat/model.js";
 import { app } from "./server.js";
 import { authoriseSocket } from "./socketMiddlewares/authoriseSocket.js";
 import { createServer } from "http";
@@ -24,17 +23,27 @@ io.on("connection", async (socket) => {
 
   // connect;
   /////////////////////////////////////////////////
-  socket.on("loggedin", async () => {});
+  // socket.on("loggedin", async () => {});
   /////////////////////////////////////////////////
-  socket.on("sendmessage", async ({ message, room, user }) => {
-    socket.join(room);
-    const newMessage = new MessageSchema(message);
-    await ChatModel.findOneAndUpdate(
-      { room },
+  socket.on("sendmessage", async ({ message, room }) => {
+    const newMessage = new MessageModel({
+      sender: socket.user,
+      content: { text: message },
+      // content: message,
+    });
+    console.log(room);
+    console.log(newMessage);
+    const testChatHistory = await ChatModel.find();
+    console.log(testChatHistory);
+    const chatHistory = await ChatModel.findByIdAndUpdate(
+      room,
       {
         $push: { history: newMessage },
       }
+      // { new: true }
     );
+    console.log(testChatHistory);
+    console.log(room);
     socket.to(room).emit("message", newMessage);
   });
 

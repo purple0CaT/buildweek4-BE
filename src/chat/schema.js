@@ -3,10 +3,11 @@ import { UserSchema } from "../user/schema.js";
 
 export const MessageSchema = new mongoose.Schema(
   {
-    sender: [{ type: UserSchema }],
+    sender: { type: UserSchema },
+    // content: { type: String },
     content: {
       text: { type: String },
-      media: { type: String },
+      // media: { type: String },
     },
   },
   { timestamps: true }
