@@ -17,5 +17,4 @@ export const ChatSchema = new mongoose.Schema({
   name: { type: String },
   history: [{ type: MessageSchema }],
   image: { type: String },
-  userOnline: [{ type: UserSchema }],
 });

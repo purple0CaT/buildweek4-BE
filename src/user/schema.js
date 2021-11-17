@@ -33,6 +33,9 @@ export const UserSchema = new mongoose.Schema(
         return !Boolean(this.googleId || this.password);
       },
     },
+    socket: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

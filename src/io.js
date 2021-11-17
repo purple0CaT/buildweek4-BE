@@ -1,12 +1,25 @@
 import listEndpoints from "express-list-endpoints";
 import mongoose from "mongoose";
+import { ChatModel } from "./chat/model.js";
 import { MessageSchema } from "./chat/schema.js";
 import { app, httpServer, io } from "./server.js";
+import { authoriseSocket } from "./socketMiddlewares/authoriseSocket.js";
 // process.env.TS_NODE_DEV && require("dotenv").config();
-const port = process.env.PORT || 3003;
+// const port = process.env.PORT || 3003;
 //
-io.on("connection", (socket) => {
+io.use(authoriseSocket);
+
+io.on("connection", async (socket) => {
   console.log(socket.id);
+  const chats = await ChatModel.find({
+    members: { $in: [socket.user] },
+  });
+
+  chats.map((chat) => {
+    socket.join(chat._id);
+    socket.emit("join", c._id);
+  });
+
   // connect;
   /////////////////////////////////////////////////
   socket.on("loggedin", async () => {});
@@ -33,12 +46,12 @@ io.on("connection", (socket) => {
   });
 });
 //
-mongoose.connect(process.env.MONGO_URL).then(() => {
-  console.log("connected to mongo");
-  httpServer.listen(port);
-  console.table(listEndpoints(app));
-  console.log("Server 🚀 > ", port);
-});
+// mongoose.connect(process.env.MONGO_URL).then(() => {
+//   console.log("connected to mongo");
+//   httpServer.listen(port);
+//   console.table(listEndpoints(app));
+//   console.log("Server 🚀 > ", port);
+// });
 
 // io.use
 // socket has headers that can have the jwt attached

@@ -7,7 +7,7 @@
   "scripts": {
     "test": "jest",
     "watch": "jest --watchAll",
-    "dev": "nodemon -r dotenv/config ./src/io.js",
+    "dev": "nodemon -r dotenv/config ./src/index.js",
     "start": "node ./build"
   },
   "repository": {
