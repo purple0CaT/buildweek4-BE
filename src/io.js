@@ -39,3 +39,12 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
   console.table(listEndpoints(app));
   console.log("Server 🚀 > ", port);
 });
+
+// io.use
+// socket has headers that can have the jwt attached
+// add socket.user
+// io.sockets.sockets
+// key pairs with {“128376hd”:SocketObject}
+// https://socket.io/docs/v3/emit-cheatsheet/
+//  if i didn't send previous message, create a room, if i did sent to already created room
+//io.rooms
