@@ -1,6 +1,6 @@
 import cookie from "cookie";
-import { verifyJWT } from "../auth/auth";
-import { UserModel } from "../user/model";
+import { verifyJWT } from "../auth/auth.js";
+import { UserModel } from "../user/model.js";
 
 export const authoriseSocket = async (socket, next) => {
   try {

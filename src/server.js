@@ -1,18 +1,16 @@
-import express from "express";
-import { catchAllHandler, generalErrHandl } from "./errorHandler.js";
-import { createServer } from "http";
-import { Server } from "socket.io";
-import cors from "cors";
 import cookieParser from "cookie-parser";
+import cors from "cors";
+import express from "express";
+import { createServer } from "http";
 import passport from "passport";
-import chatRoute from "./chat/chat.js";
-import userRoute from "./user/user.js";
+import { Server } from "socket.io";
 import googleStrategy from "./auth/oauth.js";
-import authRouter from './auth/TEMPindexMarco.js'
+import authRouter from './auth/TEMPindexMarco.js';
+import chatRoute from "./chat/chat.js";
+import { catchAllHandler, generalErrHandl } from "./errorHandler.js";
+import userRoute from "./user/user.js";
 //
 export const app = express();
-export const httpServer = createServer(app);
-export const io = new Server(httpServer);
 
 // passport.use("facebook", FBStrategy);
 passport.use("google", googleStrategy);

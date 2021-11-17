@@ -1,13 +1,15 @@
-import listEndpoints from "express-list-endpoints";
-import mongoose from "mongoose";
+import { Server } from "socket.io";
 import { ChatModel } from "./chat/model.js";
 import { MessageSchema } from "./chat/schema.js";
-import { app, httpServer, io } from "./server.js";
+import { app } from "./server.js";
 import { authoriseSocket } from "./socketMiddlewares/authoriseSocket.js";
-// process.env.TS_NODE_DEV && require("dotenv").config();
-// const port = process.env.PORT || 3003;
+import { createServer } from "http";
 //
-io.use(authoriseSocket);
+export const httpServer = createServer(app);
+export const io = new Server(httpServer);
+//
+//
+// io.use(authoriseSocket);
 
 io.on("connection", async (socket) => {
   console.log(socket.id);
