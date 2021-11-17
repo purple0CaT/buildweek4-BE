@@ -4,23 +4,23 @@ import { MessageSchema } from "./chat/schema.js";
 import { app } from "./server.js";
 import { authoriseSocket } from "./socketMiddlewares/authoriseSocket.js";
 import { createServer } from "http";
+import { UserModel } from "./user/model.js";
 //
 export const httpServer = createServer(app);
 export const io = new Server(httpServer);
 //
 //
-// io.use(authoriseSocket);
+io.use(authoriseSocket);
 
 io.on("connection", async (socket) => {
-  console.log(socket.id);
   const chats = await ChatModel.find({
-    members: { $in: [socket.user] },
+    "members._id": socket.user._id,
   });
-
-  chats.map((chat) => {
+  const mapped = chats.map((chat) => {
     socket.join(chat._id);
-    socket.emit("join", c._id);
+    socket.emit("join", chat._id);
   });
+  console.log(socket.user);
 
   // connect;
   /////////////////////////////////////////////////
@@ -39,12 +39,11 @@ io.on("connection", async (socket) => {
   });
 
   //////////////////////////////////////////////////
-  socket.on("disconnect", () => {
+  socket.on("disconnect", async () => {
     console.log("disconnected socket " + socket.id);
-
-    shared.onlineUsers = shared.onlineUsers.filter(
-      (user) => user.socketId !== socket.id
-    );
+    const user = await UserModel.findById(socket.user._id);
+    user.socket = null;
+    await user.save();
   });
 });
 //

@@ -5,11 +5,11 @@ import { UserModel } from "../user/model.js";
 export const authoriseSocket = async (socket, next) => {
   try {
     const requestForm = cookie.parse(socket.handshake.headers.cookie);
-    console.log(socket);
     const { accessToken } = requestForm;
     if (accessToken) {
-      const { id } = await verifyJWT(accessToken);
-      const user = await UserModel.findById(id);
+      const { _id } = await verifyJWT(accessToken);
+      const user = await UserModel.findById(_id);
+      // console.log(user);
       if (user) {
         user.socket = socket.id;
         await user.save();
