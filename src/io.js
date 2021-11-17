@@ -31,10 +31,7 @@ io.on("connection", async (socket) => {
       content: { text: message },
       // content: message,
     });
-    console.log(room);
-    console.log(newMessage);
-    const testChatHistory = await ChatModel.find();
-    console.log(testChatHistory);
+
     const chatHistory = await ChatModel.findByIdAndUpdate(
       room,
       {
@@ -42,7 +39,7 @@ io.on("connection", async (socket) => {
       }
       // { new: true }
     );
-    console.log(testChatHistory);
+    console.log(`ChAT HISTORY: ${chatHistory}`);
     console.log(room);
     socket.to(room).emit("message", newMessage);
   });
