@@ -15,8 +15,11 @@ io.on("connection", async (socket) => {
   const chats = await ChatModel.find({
     "members._id": socket.user._id,
   });
-  chats.map((chat) => socket.join(chat._id));
-  console.log(chats);
+  chats.map((chat) => {
+    socket.join(chat._id.toString());
+    console.log(chat._id.toString());
+  });
+  // console.log(chats);
   socket.on("sendmessage", async ({ message, room }) => {
     const newMessage = new MessageModel({
       sender: socket.user,
@@ -33,8 +36,9 @@ io.on("connection", async (socket) => {
     );
     // console.log(`ChAT HISTORY: ${chatHistory}`);
     // console.log("New message!", newMessage);
-    console.log("Room =>", room);
-    socket.in(room).emit("message", chatHistory);
+    console.log("message =>", newMessage);
+    console.log("room =>", room);
+    io.to(room).emit("message", newMessage);
   });
 
   //////////////////////////////////////////////////
