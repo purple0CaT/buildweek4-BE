@@ -119,7 +119,7 @@ userRoute.post("/session", async (req, res, next) => {
 
     const user = await UserModel.CheckCredentials(email, password);
     const chats = await ChatModel.find({
-      "members._id": req.user._id,
+      "members._id": user._id,
     });
     if (user) {
       const { accessToken, refreshToken } = await createJWT(user);
@@ -127,12 +127,12 @@ userRoute.post("/session", async (req, res, next) => {
       res.cookie("accessToken", accessToken, {
         httpOnly: true,
         // secure: (process.env.NODE_ENV = "production" ? true : false),
-        sameSite: "none",
+        // sameSite: "none",
       });
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         // secure: (process.env.NODE_ENV = "production" ? true : false),
-        sameSite: "none",
+        // sameSite: "none",
       });
       res.send({ user: { user, chats }, accessToken });
     }
