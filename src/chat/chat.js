@@ -4,6 +4,7 @@ import { v2 as cloudinary } from "cloudinary";
 import { JWTAuthMiddleware } from "../auth/token.js";
 import { ChatModel } from "./model.js";
 import multer from "multer";
+import { UserModel } from "../user/model.js";
 
 //
 const { CLOUDINARY_NAME, CLOUDINARY_KEY, CLOUDINARY_SECRET } = process.env;
@@ -33,6 +34,41 @@ chatRoute.get("/", JWTAuthMiddleware, async (req, res, next) => {
     next(error);
   }
 });
+chatRoute.post(
+  "/createChat/:userId",
+  JWTAuthMiddleware,
+  async (req, res, next) => {
+    try {
+      const addedUser = await UserModel.findById(req.params.userId);
+      const membersArray = [req.user, addedUser];
+      const newChat = new ChatModel(...req.body, { members: membersArray });
+      await newChat.save();
+      res.send(newChat);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+chatRoute.post(
+  "/addToChat/:userId/:chatId",
+  JWTAuthMiddleware,
+  async (req, res, next) => {
+    try {
+      // const membersArray = [req.user, addedUser];
+      const addedUser = await UserModel.findById(req.params.userId);
+      const chat = await ChatModel.findByIdAndUpdate(
+        req.params.chatId,
+        {
+          $push: { members: addedUser },
+        },
+        { new: true }
+      );
+      res.send(chat);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 chatRoute.post("/", JWTAuthMiddleware, async (req, res, next) => {
   try {
     const newChat = new ChatModel(req.body);
