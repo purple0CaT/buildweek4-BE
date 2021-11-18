@@ -8,6 +8,7 @@ import multer from "multer";
 import { JWTAuthenticate } from "../auth/tool.js";
 import passport from "passport";
 import { createJWT } from "../auth/auth.js";
+import { ChatModel } from "../chat/model.js";
 
 const userRoute = express.Router();
 
@@ -117,7 +118,9 @@ userRoute.post("/session", async (req, res, next) => {
     const { email, password } = req.body;
 
     const user = await UserModel.CheckCredentials(email, password);
-
+    const chats = await ChatModel.find({
+      "members._id": req.user._id,
+    });
     if (user) {
       const { accessToken, refreshToken } = await createJWT(user);
 
@@ -131,7 +134,7 @@ userRoute.post("/session", async (req, res, next) => {
         // secure: (process.env.NODE_ENV = "production" ? true : false),
         sameSite: "none",
       });
-      res.send({ user, accessToken });
+      res.send({ user: { user, chats }, accessToken });
     }
   } catch (error) {
     next(error);
