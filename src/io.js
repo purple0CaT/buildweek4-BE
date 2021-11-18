@@ -15,16 +15,8 @@ io.on("connection", async (socket) => {
   const chats = await ChatModel.find({
     "members._id": socket.user._id,
   });
-  const mapped = chats.map((chat) => {
-    socket.join(chat._id);
-    socket.emit("join", chat._id);
-  });
-  console.log(socket.user);
-
-  // connect;
-  /////////////////////////////////////////////////
-  // socket.on("loggedin", async () => {});
-  /////////////////////////////////////////////////
+  chats.map((chat) => socket.join(chat._id));
+  console.log(chats);
   socket.on("sendmessage", async ({ message, room }) => {
     const newMessage = new MessageModel({
       sender: socket.user,
@@ -36,12 +28,13 @@ io.on("connection", async (socket) => {
       room,
       {
         $push: { history: newMessage },
-      }
-      // { new: true }
+      },
+      { new: true }
     );
-    console.log(`ChAT HISTORY: ${chatHistory}`);
-    console.log(room);
-    socket.to(room).emit("message", newMessage);
+    // console.log(`ChAT HISTORY: ${chatHistory}`);
+    // console.log("New message!", newMessage);
+    console.log("Room =>", room);
+    socket.in(room).emit("message", chatHistory);
   });
 
   //////////////////////////////////////////////////

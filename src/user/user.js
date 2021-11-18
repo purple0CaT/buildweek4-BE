@@ -93,9 +93,19 @@ userRoute.get("/:id", async (req, res, next) => {
 userRoute.post("/account", async (req, res, next) => {
   try {
     const newUser = new UserModel(req.body);
-    const { _id } = await newUser.save();
+    await newUser.save();
     const accessToken = await createJWT(newUser);
-    res.send({ ...newUser.toObject(), accessToken });
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      // secure: (process.env.NODE_ENV = "production" ? true : false),
+      sameSite: "none",
+    });
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      // secure: (process.env.NODE_ENV = "production" ? true : false),
+      sameSite: "none",
+    });
+    res.send({ newUser, accessToken });
   } catch (error) {
     next(error);
   }
@@ -120,7 +130,7 @@ userRoute.post("/session", async (req, res, next) => {
         // secure: (process.env.NODE_ENV = "production" ? true : false),
         sameSite: "none",
       });
-      res.send(accessToken);
+      res.send({ user, accessToken });
     }
   } catch (error) {
     next(error);
