@@ -40,6 +40,7 @@ userRoute.get("/", async (req, res, next) => {
   }
 });
 userRoute.get("/me", JWTAuthMiddleware, async (req, res, next) => {
+  // userRoute.get("/me", async (req, res, next) => {
   try {
     res.send(req.user);
   } catch (error) {
