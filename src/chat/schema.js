@@ -14,7 +14,7 @@ export const MessageSchema = new mongoose.Schema(
 );
 
 export const ChatSchema = new mongoose.Schema({
-  members: [{ type: UserSchema, required: false }],
+  members: [{ type: Object, required: false }],
   name: { type: String },
   history: [{ type: MessageSchema }],
   image: { type: String },
