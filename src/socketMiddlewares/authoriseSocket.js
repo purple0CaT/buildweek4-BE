@@ -7,13 +7,13 @@ export const authoriseSocket = async (socket, next) => {
   // console.log("Header =>", token);
   try {
     // console.log("Middleware =>", socket.id);
-    const accessToken = socket.handshake.auth.accessToken;
-    // const requestForm = cookie.parse(socket.handshake.headers.cookie);
-    // const { accessToken } = requestForm;
+    // const accessToken = socket.handshake.auth.accessToken;
+    const requestForm = cookie.parse(socket.handshake.headers.cookie);
+    const { accessToken } = requestForm;
     if (accessToken) {
       const { _id } = await verifyJWT(accessToken);
       const user = await UserModel.findById(_id);
-      console.log(user);
+      // console.log(user);
       if (user) {
         user.socket = socket.id;
         await user.save();

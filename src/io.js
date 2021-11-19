@@ -1,8 +1,8 @@
+import { createServer } from "http";
 import { Server } from "socket.io";
 import { ChatModel, MessageModel } from "./chat/model.js";
 import { app } from "./server.js";
 import { authoriseSocket } from "./socketMiddlewares/authoriseSocket.js";
-import { createServer } from "http";
 import { UserModel } from "./user/model.js";
 //
 export const httpServer = createServer(app);
@@ -17,9 +17,8 @@ io.on("connection", async (socket) => {
   });
   chats.map((chat) => {
     socket.join(chat._id.toString());
-    console.log(chat._id.toString());
   });
-  // console.log(chats);
+  // ======================
   socket.on("sendmessage", async ({ message, room }) => {
     const newMessage = new MessageModel({
       sender: socket.user,
@@ -34,11 +33,8 @@ io.on("connection", async (socket) => {
       },
       { new: true }
     );
-    // console.log(`ChAT HISTORY: ${chatHistory}`);
-    // console.log("New message!", newMessage);
-    console.log("message =>", newMessage);
-    console.log("room =>", room);
-    io.to(room).emit("message", newMessage);
+    io.in(room).emit("message", chatHistory);
+    socket.to(room).emit("ping", true);
   });
 
   //////////////////////////////////////////////////
