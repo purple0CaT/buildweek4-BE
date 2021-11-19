@@ -33,7 +33,9 @@ userRoute.get(
   async (req, res, next) => {
     try {
       // res.send("Hello");
-      const users = await UserModel.find();
+      const users = await UserModel.find({
+        username: { $regex: `${req.params.searchReq}`, $options: "i" },
+      });
       if (users) {
         res.send(users);
       } else {
