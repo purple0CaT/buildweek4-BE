@@ -68,8 +68,9 @@ authRouter.get(
       // secure: (process.env.NODE_ENV = "production" ? true : false),
       // sameSite: "none",
     });
-    res.send({ newUser, accessToken });
-    res.redirect(`http://localhost:3000/main/${req.user._id}}`);
+    // console.log(req.user);
+    res.redirect(`http://localhost:3000/main/${req.user.user._id}}`);
+    res.send({ user: req.user.user, tokens: req.user.token });
   }
 );
 

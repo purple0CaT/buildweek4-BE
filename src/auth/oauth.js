@@ -15,8 +15,9 @@ const googleStrategy = new GoogleStrategy(
     // console.log("USER from OAUTH: ", user); //********************************CONSOLE LOG HERE */
     if (user) {
       const token = await createJWT(user);
+      // req.user = user;
       // console.log("USER ID from OAUTH (EXISTING USER): ", user._id); //************************CONSOLE LOG HERE */
-      passportNext(null, { token });
+      passportNext(null, { user, token });
     } else {
       const user = new UserModel({
         username: profile.name.givenName, // USING GOOGLE's givenName AS username
@@ -24,9 +25,10 @@ const googleStrategy = new GoogleStrategy(
         googleId: profile.id,
       });
       await user.save();
+      // req.user = user;
       // console.log("USER ID from OAUTH (CREATED USER): ", user._id); //********************************CONSOLE LOG HERE */
       const token = await createJWT(user);
-      passportNext(null, { token });
+      passportNext(null, { user, token });
     }
   }
 );
