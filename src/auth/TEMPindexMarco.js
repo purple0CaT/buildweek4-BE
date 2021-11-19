@@ -61,16 +61,15 @@ authRouter.get(
     res.cookie("accessToken", req.user.token.accessToken, {
       httpOnly: true,
       // secure: (process.env.NODE_ENV = "production" ? true : false),
-      sameSite: "none",
+      // sameSite: "none",
     });
     res.cookie("refreshToken", req.user.token.refreshToken, {
       httpOnly: true,
       // secure: (process.env.NODE_ENV = "production" ? true : false),
-      sameSite: "none",
+      // sameSite: "none",
     });
-    res.redirect(
-      `http://localhost:3000?accessToken=${req.user.token.accessToken}}`
-    );
+    res.send({ newUser, accessToken });
+    res.redirect(`http://localhost:3000/main/${req.user._id}}`);
   }
 );
 

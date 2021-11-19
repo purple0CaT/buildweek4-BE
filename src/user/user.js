@@ -116,16 +116,16 @@ userRoute.post("/account", async (req, res, next) => {
   try {
     const newUser = new UserModel(req.body);
     await newUser.save();
-    const accessToken = await createJWT(newUser);
+    const { accessToken, refreshToken } = await createJWT(newUser);
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       // secure: (process.env.NODE_ENV = "production" ? true : false),
-      sameSite: "none",
+      // sameSite: "none",
     });
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       // secure: (process.env.NODE_ENV = "production" ? true : false),
-      sameSite: "none",
+      // sameSite: "none",
     });
     res.send({ newUser, accessToken });
   } catch (error) {
