@@ -1,7 +1,10 @@
-import { Schema, model } from "mongoose";
+import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+// const { Schema, model } = mongoose;
 
-const UserSchema = new Schema(
+// const { Schema, model } = mongoose;
+
+export const UserSchema = new mongoose.Schema(
   {
     username: { type: String, required: true },
     email: {
@@ -29,6 +32,9 @@ const UserSchema = new Schema(
       required: function () {
         return !Boolean(this.googleId || this.password);
       },
+    },
+    socket: {
+      type: String,
     },
   },
   { timestamps: true }
@@ -65,4 +71,4 @@ UserSchema.statics.CheckCredentials = async function (email, pass) {
   }
 };
 //
-export default model("User", UserSchema);
+// export default model("users", UserSchema);
