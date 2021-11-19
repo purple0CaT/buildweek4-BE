@@ -27,7 +27,24 @@ const cloudinaryStorage = new CloudinaryStorage({
   },
 });
 
-userRoute.get("/", async (req, res, next) => {
+userRoute.get(
+  "/search/:searchReq",
+  JWTAuthMiddleware,
+  async (req, res, next) => {
+    try {
+      // res.send("Hello");
+      const users = await UserModel.find();
+      if (users) {
+        res.send(users);
+      } else {
+        next(createHttpError(404, "Users not found!"));
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+userRoute.get("/", JWTAuthMiddleware, async (req, res, next) => {
   try {
     // res.send("Hello");
     const users = await UserModel.find();
@@ -74,6 +91,7 @@ userRoute.post(
       // const userWithAvatar = { ...user, ...newAvatar };
       res.send(user);
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }

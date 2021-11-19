@@ -1,9 +1,7 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
-import { createServer } from "http";
 import passport from "passport";
-import { Server } from "socket.io";
 import googleStrategy from "./auth/oauth.js";
 import authRouter from "./auth/TEMPindexMarco.js";
 import chatRoute from "./chat/chat.js";
