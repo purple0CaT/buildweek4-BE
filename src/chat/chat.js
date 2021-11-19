@@ -1,10 +1,10 @@
-import express from "express";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
 import { v2 as cloudinary } from "cloudinary";
-import { JWTAuthMiddleware } from "../auth/token.js";
-import { ChatModel } from "./model.js";
+import express from "express";
 import multer from "multer";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import { JWTAuthMiddleware } from "../auth/token.js";
 import { UserModel } from "../user/model.js";
+import { ChatModel } from "./model.js";
 
 //
 const { CLOUDINARY_NAME, CLOUDINARY_KEY, CLOUDINARY_SECRET } = process.env;
@@ -36,6 +36,38 @@ chatRoute.get("/", JWTAuthMiddleware, async (req, res, next) => {
     next(error);
   }
 });
+chatRoute.get("/:id", JWTAuthMiddleware, async (req, res, next) => {
+  try {
+    const chat = await ChatModel.findById(req.params.id);
+    res.send(chat);
+  } catch (error) {
+    next(error);
+  }
+});
+chatRoute.post("/", JWTAuthMiddleware, async (req, res, next) => {
+  try {
+    const newChat = new ChatModel(req.body);
+    await newChat.save();
+    res.send(newChat);
+  } catch (error) {
+    next(error);
+  }
+});
+chatRoute.post(
+  "/:id/image",
+  JWTAuthMiddleware,
+  multer({ storage: cloudinaryStorage }).single("image"),
+  async (req, res, next) => {
+    try {
+      const chat = await ChatModel.findById(req.params.id);
+      chat.image = req.file.path;
+      await chat.save();
+      res.send(chat);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 chatRoute.post(
   "/createChat/:userId",
   JWTAuthMiddleware,
@@ -55,8 +87,8 @@ chatRoute.post(
   "/addToChat/:userId/:chatId",
   JWTAuthMiddleware,
   async (req, res, next) => {
+    console.log(req.params.userId, req.params.chatId);
     try {
-      // const membersArray = [req.user, addedUser];
       const addedUser = await UserModel.findById(req.params.userId);
       const chat = await ChatModel.findByIdAndUpdate(
         req.params.chatId,
@@ -65,40 +97,34 @@ chatRoute.post(
         },
         { new: true }
       );
-      res.send(chat);
+      const allChats = await ChatModel.find({
+        "members._id": req.user._id,
+      });
+      res.send({ newChat: chat, allChats });
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
 );
-chatRoute.post("/", JWTAuthMiddleware, async (req, res, next) => {
-  try {
-    const newChat = new ChatModel(req.body);
-    await newChat.save();
-    res.send(newChat);
-  } catch (error) {
-    next(error);
-  }
-});
-chatRoute.get("/:id", JWTAuthMiddleware, async (req, res, next) => {
-  try {
-    const chat = await ChatModel.findById(req.params.id);
-    res.send(chat);
-  } catch (error) {
-    next(error);
-  }
-});
-chatRoute.post(
-  "/:id/image",
+chatRoute.delete(
+  "/deleteFromChat/:userId/:chatId",
   JWTAuthMiddleware,
-  multer({ storage: cloudinaryStorage }).single("image"),
   async (req, res, next) => {
     try {
-      const chat = await ChatModel.findById(req.params.id);
-      chat.image = req.file.path;
-      await chat.save();
-      res.send(chat);
+      const Mychat = await ChatModel.findByIdAndUpdate(
+        req.params.chatId,
+        {
+          $pull: { members: { _id: { $in: req.params.userId } } },
+        },
+        { new: true }
+      );
+      const allChats = await ChatModel.find({
+        "members._id": req.user._id,
+      });
+      res.send({ chat: Mychat, allChats });
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
