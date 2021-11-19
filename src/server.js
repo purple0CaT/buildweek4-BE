@@ -16,7 +16,7 @@ passport.use("google", googleStrategy);
 app.use(
   cors({
     credentials: true, // important part here
-    origin: "http://localhost:3000",
+    origin: process.env.FEURL,
   })
 );
 app.use(express.json());
