@@ -24,7 +24,9 @@ const cloudinaryStorage = new CloudinaryStorage({
 const chatRoute = express.Router();
 chatRoute.get("/", JWTAuthMiddleware, async (req, res, next) => {
   try {
-    const chats = await ChatModel.find();
+    const chats = await ChatModel.find({
+      "members._id": req.user._id,
+    });
     if (chats) {
       res.send(chats);
     } else {
