@@ -33,13 +33,16 @@ io.on("connection", async (socket) => {
       },
       { new: true }
     );
-    io.in(room).emit("message", chatHistory);
+    const allChats = await ChatModel.find({
+      "members._id": socket.user._id,
+    });
+    io.in(room).emit("message", { chatHistory, allChats });
     socket.to(room).emit("ping", true);
   });
 
   //////////////////////////////////////////////////
   socket.on("disconnect", async () => {
-    console.log("disconnected socket " + socket.id);
+    // console.log("disconnected socket " + socket.id);
     const user = await UserModel.findById(socket.user._id);
     user.socket = null;
     await user.save();

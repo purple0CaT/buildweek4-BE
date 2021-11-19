@@ -55,8 +55,8 @@ chatRoute.post(
   "/addToChat/:userId/:chatId",
   JWTAuthMiddleware,
   async (req, res, next) => {
+    console.log(req.params.userId, req.params.chatId);
     try {
-      // const membersArray = [req.user, addedUser];
       const addedUser = await UserModel.findById(req.params.userId);
       const chat = await ChatModel.findByIdAndUpdate(
         req.params.chatId,
@@ -65,8 +65,12 @@ chatRoute.post(
         },
         { new: true }
       );
-      res.send(chat);
+      const allChats = await ChatModel.find({
+        "members._id": req.user._id,
+      });
+      res.send({ newChat: chat, allChats });
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
@@ -80,6 +84,26 @@ chatRoute.post("/", JWTAuthMiddleware, async (req, res, next) => {
     next(error);
   }
 });
+chatRoute.delete(
+  "/deleteFromChat/:userId/:chatId",
+  JWTAuthMiddleware,
+  async (req, res, next) => {
+    try {
+      const chat = await ChatModel.findById(req.params.chatId);
+      const members = chat.members.filter(
+        (M) => M._id.toString() !== req.params.userId.toString()
+      );
+      chat.members = members;
+      await chat.save();
+      const allChats = await ChatModel.find({
+        "members._id": req.user._id,
+      });
+      res.send({ chat, allChats });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 chatRoute.get("/:id", JWTAuthMiddleware, async (req, res, next) => {
   try {
     const chat = await ChatModel.findById(req.params.id);
