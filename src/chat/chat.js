@@ -118,7 +118,7 @@ chatRoute.delete(
       const Mychat = await ChatModel.findByIdAndUpdate(
         req.params.chatId,
         {
-          $pull: { members: { _id: { $in: req.params.userId } } },
+          $pull: { members: { _id: req.params.userId } },
         },
         { new: true }
       );
