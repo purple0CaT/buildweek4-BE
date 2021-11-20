@@ -187,6 +187,12 @@ userRoute.delete("/session", JWTAuthMiddleware, async (req, res, next) => {
   try {
     req.user.refreshToken = null;
     await req.user.save();
+    res.cookie({
+      httpOnly: true,
+      // secure: (process.env.NODE_ENV = "production" ? true : false),
+      sameSite: "none",
+      secure: true,
+    });
     res.send("Ok");
   } catch (error) {
     next(error);
