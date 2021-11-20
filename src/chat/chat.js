@@ -75,9 +75,12 @@ chatRoute.post(
     try {
       const addedUser = await UserModel.findById(req.params.userId);
       const membersArray = [req.user, addedUser];
-      const newChat = new ChatModel(...req.body, { members: membersArray });
+      const newChat = new ChatModel({ ...req.body, members: membersArray });
       await newChat.save();
-      res.send(newChat);
+      const allChats = await ChatModel.find({
+        "members._id": req.user._id,
+      });
+      res.send(allChats);
     } catch (error) {
       next(error);
     }
@@ -115,7 +118,7 @@ chatRoute.delete(
       const Mychat = await ChatModel.findByIdAndUpdate(
         req.params.chatId,
         {
-          $pull: { members: { _id: { $in: req.params.userId } } },
+          $pull: { members: { _id: req.params.userId } },
         },
         { new: true }
       );
