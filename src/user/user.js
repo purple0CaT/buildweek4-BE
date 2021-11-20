@@ -149,13 +149,13 @@ userRoute.post("/session", async (req, res, next) => {
       res.cookie("accessToken", accessToken, {
         httpOnly: true,
         // secure: (process.env.NODE_ENV = "production" ? true : false),
-        // sameSite: "none",
+        sameSite: "none",
         secure: true,
       });
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         // secure: (process.env.NODE_ENV = "production" ? true : false),
-        // sameSite: "none",
+        sameSite: "none",
         secure: true,
       });
       res.send({ user: { user, chats }, accessToken });
