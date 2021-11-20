@@ -118,12 +118,12 @@ userRoute.post("/account", async (req, res, next) => {
     await newUser.save();
     const { accessToken, refreshToken } = await createJWT(newUser);
     res.cookie("accessToken", accessToken, {
-      httpOnly: true,
+      httpOnly: false,
       // secure: (process.env.NODE_ENV = "production" ? true : false),
       // sameSite: "none",
     });
     res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
+      httpOnly: false,
       // secure: (process.env.NODE_ENV = "production" ? true : false),
       // sameSite: "none",
     });
@@ -145,12 +145,12 @@ userRoute.post("/session", async (req, res, next) => {
       const { accessToken, refreshToken } = await createJWT(user);
 
       res.cookie("accessToken", accessToken, {
-        httpOnly: true,
+        httpOnly: false,
         // secure: (process.env.NODE_ENV = "production" ? true : false),
         // sameSite: "none",
       });
       res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
+        httpOnly: false,
         // secure: (process.env.NODE_ENV = "production" ? true : false),
         // sameSite: "none",
       });
