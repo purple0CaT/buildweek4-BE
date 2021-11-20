@@ -121,10 +121,12 @@ userRoute.post("/account", async (req, res, next) => {
       httpOnly: false,
       // secure: (process.env.NODE_ENV = "production" ? true : false),
       // sameSite: "none",
+      secure: true,
     });
     res.cookie("refreshToken", refreshToken, {
-      httpOnly: false,
+      // httpOnly: false,
       // secure: (process.env.NODE_ENV = "production" ? true : false),
+      secure: true,
       // sameSite: "none",
     });
     res.send({ newUser, accessToken });
@@ -148,11 +150,13 @@ userRoute.post("/session", async (req, res, next) => {
         httpOnly: false,
         // secure: (process.env.NODE_ENV = "production" ? true : false),
         // sameSite: "none",
+        secure: true,
       });
       res.cookie("refreshToken", refreshToken, {
         httpOnly: false,
         // secure: (process.env.NODE_ENV = "production" ? true : false),
         // sameSite: "none",
+        secure: true,
       });
       res.send({ user: { user, chats }, accessToken });
     }
