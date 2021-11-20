@@ -147,13 +147,13 @@ userRoute.post("/session", async (req, res, next) => {
       const { accessToken, refreshToken } = await createJWT(user);
 
       res.cookie("accessToken", accessToken, {
-        // httpOnly: false,
+        httpOnly: true,
         // secure: (process.env.NODE_ENV = "production" ? true : false),
         // sameSite: "none",
         secure: true,
       });
       res.cookie("refreshToken", refreshToken, {
-        // httpOnly: false,
+        httpOnly: true,
         // secure: (process.env.NODE_ENV = "production" ? true : false),
         // sameSite: "none",
         secure: true,
